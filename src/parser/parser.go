@@ -7,6 +7,7 @@ import (
 	"orangutan/ast"
 	"orangutan/lexer"
 	"orangutan/token"
+	"strconv"
 )
 
 const (
@@ -48,6 +49,7 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 
 	return p
 }
@@ -168,6 +170,21 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 
 func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Lexeme}
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	lit := &ast.IntegerLiteral{Token: p.curToken}
+
+	value, error := strconv.ParseInt(p.curToken.Lexeme, 0, 64)
+	if error != nil {
+		msg := fmt.Sprintf("could not parse %q as an integer", p.curToken.Lexeme)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	lit.IntValue = value
+
+	return lit
 }
 
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
