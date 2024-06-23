@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-import "orangutan/tracing"
+// import "orangutan/tracing"
 
 const (
 	_ = iota
@@ -184,7 +184,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 }
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
-	defer tracing.UnTrace(tracing.Trace("parseExpressionStatement"))
+	// defer tracing.UnTrace(tracing.Trace("parseExpressionStatement"))
 	stmt := &ast.ExpressionStatement{Token: p.curToken}
 
 	stmt.ExpressionValue = p.parseExpression(LOWEST)
@@ -197,7 +197,7 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precedence int) ast.Expression {
-	defer tracing.UnTrace(tracing.Trace("parseExpression"))
+	// defer tracing.UnTrace(tracing.Trace("parseExpression"))
 	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
 		p.noPrefixParseFnError(p.curToken.Type)
@@ -227,7 +227,7 @@ func (p *Parser) parseIdentifier() ast.Expression {
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
-	defer tracing.UnTrace(tracing.Trace("parseIntegerLiteral"))
+	// defer tracing.UnTrace(tracing.Trace("parseIntegerLiteral"))
 	lit := &ast.IntegerLiteral{Token: p.curToken}
 
 	value, error := strconv.ParseInt(p.curToken.Lexeme, 0, 64)
@@ -243,7 +243,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 }
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
-	defer tracing.UnTrace(tracing.Trace("parsePrefixExpression"))
+	// defer tracing.UnTrace(tracing.Trace("parsePrefixExpression"))
 	expression := &ast.PrefixExpression{
 		Token:    p.curToken,
 		Operator: p.curToken.Lexeme,
@@ -256,7 +256,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
-	defer tracing.UnTrace(tracing.Trace("parseInfixExpression"))
+	// defer tracing.UnTrace(tracing.Trace("parseInfixExpression"))
 	expression := &ast.InfixExpression{
 		Token:    p.curToken,
 		Left:     left,
