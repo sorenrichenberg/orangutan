@@ -78,8 +78,8 @@ func (ls *LetStatement) String() string {
 }
 
 type ReturnStatement struct {
-	Token       token.Token // always RETURN token
-	ReturnValue Expression
+	Token token.Token // always RETURN token
+	Value Expression
 }
 
 func (rs *ReturnStatement) statementNode()       {}
@@ -89,8 +89,8 @@ func (rs *ReturnStatement) String() string {
 
 	out.WriteString(rs.TokenLiteral() + " ")
 
-	if rs.ReturnValue != nil {
-		out.WriteString(rs.ReturnValue.String())
+	if rs.Value != nil {
+		out.WriteString(rs.Value.String())
 	}
 
 	out.WriteString(";")
@@ -99,8 +99,8 @@ func (rs *ReturnStatement) String() string {
 }
 
 type ExpressionStatement struct {
-	Token           token.Token
-	ExpressionValue Expression
+	Token token.Token
+	Value Expression
 }
 
 func (es *ExpressionStatement) statementNode()       {}
@@ -108,16 +108,16 @@ func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Lexeme }
 func (es *ExpressionStatement) String() string {
 	var out bytes.Buffer
 
-	if es.ExpressionValue != nil {
-		out.WriteString(es.ExpressionValue.String())
+	if es.Value != nil {
+		out.WriteString(es.Value.String())
 	}
 
 	return out.String()
 }
 
 type IntegerLiteral struct {
-	Token    token.Token
-	IntValue int64
+	Token token.Token
+	Value int64
 }
 
 func (il *IntegerLiteral) expressionNode()      {}
@@ -150,16 +150,53 @@ type InfixExpression struct {
 	Right    Expression
 }
 
-func (ie *InfixExpression) expressionNode()      {}
-func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Lexeme }
-func (ie *InfixExpression) String() string {
+func (ne *InfixExpression) expressionNode()      {}
+func (ne *InfixExpression) TokenLiteral() string { return ne.Token.Lexeme }
+func (ne *InfixExpression) String() string {
 	var out bytes.Buffer
 
 	out.WriteString("(")
-	out.WriteString(ie.Left.String())
-	out.WriteString(" " + ie.Operator + " ")
-	out.WriteString(ie.Right.String())
+	out.WriteString(ne.Left.String())
+	out.WriteString(" " + ne.Operator + " ")
+	out.WriteString(ne.Right.String())
 	out.WriteString(")")
 
 	return out.String()
 }
+
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+func (boo *Boolean) expressionNode()      {}
+func (boo *Boolean) TokenLiteral() string { return boo.Token.Lexeme }
+func (boo *Boolean) String() string       { return boo.Token.Lexeme }
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: this
+type IfExpression struct {
+	Token token.Token
+}
+
+func (ie *IfExpression) expressionNode()      {}
+func (ie *IfExpression) TokenLiteral() string { return ie.Token.Lexeme }
+func (ie *IfExpression) String() string       { return ie.Token.Lexeme }
+
+type FunctionLiteral struct {
+	Token token.Token
+}
+
+func (fl *FunctionLiteral) expressionNode()      {}
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Lexeme }
+func (fl *FunctionLiteral) String() string       { return fl.Token.Lexeme }
+
+type CallExpression struct {
+	Token token.Token
+}
+
+func (ce *CallExpression) expressionNode()      {}
+func (ce *CallExpression) TokenLiteral() string { return ce.Token.Lexeme }
+func (ce *CallExpression) String() string       { return ce.Token.Lexeme }
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
