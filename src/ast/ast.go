@@ -44,14 +44,22 @@ func (p *Program) String() string {
 	return out.String()
 }
 
-type Identifier struct {
-	Token token.Token // always IDENT token
-	Value string
+type BlockStatement struct {
+	Token      token.Token // the { token
+	Statements []Statement
 }
 
-func (i *Identifier) expressionNode()      {}
-func (i *Identifier) TokenLiteral() string { return i.Value }
-func (i *Identifier) String() string       { return i.Value }
+func (bs *BlockStatement) statementNode()       {}
+func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Lexeme }
+func (bs *BlockStatement) String() string {
+	var out bytes.Buffer
+
+	for _, s := range bs.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
 
 type LetStatement struct {
 	Token token.Token // always LET token
@@ -115,6 +123,15 @@ func (es *ExpressionStatement) String() string {
 	return out.String()
 }
 
+type Identifier struct {
+	Token token.Token // always IDENT token
+	Value string
+}
+
+func (i *Identifier) expressionNode()      {}
+func (i *Identifier) TokenLiteral() string { return i.Value }
+func (i *Identifier) String() string       { return i.Value }
+
 type IntegerLiteral struct {
 	Token token.Token
 	Value int64
@@ -176,12 +193,29 @@ func (boo *Boolean) String() string       { return boo.Token.Lexeme }
 // /////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: this
 type IfExpression struct {
-	Token token.Token
+	Token       token.Token
+	Condition   Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
 }
 
 func (ie *IfExpression) expressionNode()      {}
 func (ie *IfExpression) TokenLiteral() string { return ie.Token.Lexeme }
-func (ie *IfExpression) String() string       { return ie.Token.Lexeme }
+func (ie *IfExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("if")
+	out.WriteString(ie.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ie.Consequence.String())
+
+	if ie.Alternative != nil {
+		out.WriteString("else")
+		out.WriteString(ie.Alternative.String())
+	}
+
+	return out.String()
+}
 
 type FunctionLiteral struct {
 	Token token.Token
