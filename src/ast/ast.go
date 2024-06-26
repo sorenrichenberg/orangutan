@@ -5,6 +5,7 @@ package ast
 import (
 	"bytes"
 	"orangutan/token"
+	"strings"
 )
 
 type Node interface {
@@ -190,8 +191,6 @@ func (boo *Boolean) expressionNode()      {}
 func (boo *Boolean) TokenLiteral() string { return boo.Token.Lexeme }
 func (boo *Boolean) String() string       { return boo.Token.Lexeme }
 
-// /////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: this
 type IfExpression struct {
 	Token       token.Token
 	Condition   Expression
@@ -218,12 +217,32 @@ func (ie *IfExpression) String() string {
 }
 
 type FunctionLiteral struct {
-	Token token.Token
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
 }
 
 func (fl *FunctionLiteral) expressionNode()      {}
 func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Lexeme }
-func (fl *FunctionLiteral) String() string       { return fl.Token.Lexeme }
+func (fl *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	params := []string{}
+	for _, param := range fl.Parameters {
+		params = append(params, param.String())
+	}
+
+	out.WriteString("fn")
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(")")
+	out.WriteString(fl.Body.String())
+
+	return out.String()
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: this
 
 type CallExpression struct {
 	Token token.Token
