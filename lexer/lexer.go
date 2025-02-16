@@ -56,19 +56,19 @@ func isDigit(ch byte) bool {
 }
 
 func (l *Lexer) readIdentifier() string {
-	position := l.position
+	startPosition := l.position
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+	return l.input[startPosition:l.position]
 }
 
 func (l *Lexer) readNumber() string {
-	position := l.position
+	startPosition := l.position
 	for isDigit(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+	return l.input[startPosition:l.position]
 }
 
 func (l *Lexer) NextToken() token.Token {
