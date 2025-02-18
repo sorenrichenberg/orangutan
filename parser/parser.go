@@ -149,6 +149,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 }
 
 func (p *Parser) parseStatement() ast.Statement {
+	// defer tracing.UnTrace(tracing.Trace("parseStatement"))
 	switch p.curToken.Type {
 	case token.LET:
 		return p.parseLetStatement()
@@ -160,6 +161,7 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
+	// defer tracing.UnTrace(tracing.Trace("parseLetStatement"))
 	stmt := &ast.LetStatement{Token: p.curToken}
 
 	if !p.expectPeek(token.IDENT) {
@@ -184,6 +186,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 }
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	// defer tracing.UnTrace(tracing.Trace("parseReturnStatement"))
 	stmt := &ast.ReturnStatement{Token: p.curToken}
 
 	p.nextToken()
@@ -237,10 +240,12 @@ func (p *Parser) noPrefixParseFnError(t token.TokenType) {
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseIdentifier"))
 	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Lexeme}
 }
 
 func (p *Parser) parseBoolean() ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseBoolean"))
 	return &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
 }
 
@@ -289,6 +294,7 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseGroupedExpression() ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseGroupedExpression"))
 	p.nextToken()
 
 	expression := p.parseExpression(LOWEST)
@@ -301,6 +307,7 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 }
 
 func (p *Parser) parseIfExpression() ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseIfExpression"))
 	expression := &ast.IfExpression{Token: p.curToken}
 
 	if !p.expectPeek(token.LPAREN) {
@@ -334,6 +341,7 @@ func (p *Parser) parseIfExpression() ast.Expression {
 }
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
+	// defer tracing.UnTrace(tracing.Trace("parseBlockStatement"))
 	block := &ast.BlockStatement{Token: p.curToken}
 	block.Statements = []ast.Statement{}
 
@@ -351,6 +359,7 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 }
 
 func (p *Parser) parseFunctionLiteral() ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseFunctionLiteral"))
 	lit := &ast.FunctionLiteral{Token: p.curToken}
 
 	if !p.expectPeek(token.LPAREN) {
@@ -369,6 +378,7 @@ func (p *Parser) parseFunctionLiteral() ast.Expression {
 }
 
 func (p *Parser) parseFunctionParameters() []*ast.Identifier {
+	// defer tracing.UnTrace(tracing.Trace("parseFunctionParameters"))
 	parameters := []*ast.Identifier{}
 
 	if p.peekTokenIs(token.RPAREN) {
@@ -396,12 +406,14 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 }
 
 func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseCallExpression"))
 	exp := &ast.CallExpression{Token: p.curToken, Function: function}
 	exp.Arguments = p.parseCallArguments()
 	return exp
 }
 
 func (p *Parser) parseCallArguments() []ast.Expression {
+	// defer tracing.UnTrace(tracing.Trace("parseCallArguments"))
 	args := []ast.Expression{}
 
 	if p.peekTokenIs(token.RPAREN) {
