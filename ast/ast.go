@@ -87,8 +87,8 @@ func (ls *LetStatement) String() string {
 }
 
 type ReturnStatement struct {
-	Token token.Token // always RETURN token
-	Value Expression
+	Token    token.Token // always RETURN token
+	RetValue Expression
 }
 
 func (rs *ReturnStatement) statementNode()       {}
@@ -98,8 +98,8 @@ func (rs *ReturnStatement) String() string {
 
 	out.WriteString(rs.TokenLiteral() + " ")
 
-	if rs.Value != nil {
-		out.WriteString(rs.Value.String())
+	if rs.RetValue != nil {
+		out.WriteString(rs.RetValue.String())
 	}
 
 	out.WriteString(";")
@@ -108,8 +108,8 @@ func (rs *ReturnStatement) String() string {
 }
 
 type ExpressionStatement struct {
-	Token token.Token
-	Value Expression
+	Token     token.Token
+	ExprValue Expression
 }
 
 func (es *ExpressionStatement) statementNode()       {}
@@ -117,8 +117,8 @@ func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Lexeme }
 func (es *ExpressionStatement) String() string {
 	var out bytes.Buffer
 
-	if es.Value != nil {
-		out.WriteString(es.Value.String())
+	if es.ExprValue != nil {
+		out.WriteString(es.ExprValue.String())
 	}
 
 	return out.String()

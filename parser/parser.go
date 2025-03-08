@@ -190,7 +190,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 	p.nextToken()
 
-	stmt.Value = p.parseExpression(LOWEST)
+	stmt.RetValue = p.parseExpression(LOWEST)
 
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()
@@ -203,7 +203,7 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	// defer tracing.UnTrace(tracing.Trace("parseExpressionStatement"))
 	stmt := &ast.ExpressionStatement{Token: p.curToken}
 
-	stmt.Value = p.parseExpression(LOWEST)
+	stmt.ExprValue = p.parseExpression(LOWEST)
 
 	if p.peekTokenIs(token.SEMICOLON) {
 		p.nextToken()

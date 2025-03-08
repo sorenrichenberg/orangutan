@@ -10,7 +10,7 @@ import (
 func TestNextToken1(t *testing.T) {
 	input := `=+(){},;`
 
-	testCases := []struct {
+	tests := []struct {
 		expectedType   token.TokenType
 		expectedLexeme string
 	}{
@@ -27,7 +27,7 @@ func TestNextToken1(t *testing.T) {
 
 	l := New(input)
 
-	for i, tt := range testCases {
+	for i, tt := range tests {
 		tok := l.NextToken()
 
 		if tok.Type != tt.expectedType {
@@ -50,7 +50,7 @@ let add = fn(x, y) {
 let result = add(five, ten);
 `
 
-	testCases := []struct {
+	tests := []struct {
 		expectedType   token.TokenType
 		expectedLexeme string
 	}{
@@ -95,7 +95,7 @@ let result = add(five, ten);
 
 	l := New(input)
 
-	for i, tt := range testCases {
+	for i, tt := range tests {
 		tok := l.NextToken()
 
 		if tok.Type != tt.expectedType {
@@ -129,7 +129,7 @@ if (5 < 10) {
 10 != 9;
 `
 
-	testCases := []struct {
+	tests := []struct {
 		expectedType   token.TokenType
 		expectedLexeme string
 	}{
@@ -211,7 +211,7 @@ if (5 < 10) {
 
 	l := New(input)
 
-	for i, tt := range testCases {
+	for i, tt := range tests {
 		tok := l.NextToken()
 
 		if tok.Type != tt.expectedType {

@@ -23,10 +23,10 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalBlockStatement(node.Statements, env)
 
 	case *ast.ExpressionStatement:
-		return Eval(node.Value, env)
+		return Eval(node.ExprValue, env)
 
 	case *ast.ReturnStatement:
-		val := Eval(node.Value, env)
+		val := Eval(node.RetValue, env)
 		if isError(val) {
 			return val
 		}
@@ -74,7 +74,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		params := node.Parameters
 		body := node.Body
 		return &object.Function{Parameters: params, Env: env, Body: body}
-	
+
 	case *ast.CallExpression:
 		function := Eval(node.Function, env)
 		if isError(function) {
@@ -283,7 +283,7 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 	return unWrapReturnValue(evaluated)
 }
 
-func extendFunctionEnv(fn *object.Function, args[]object.Object) *object.Environment {
+func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {
 	env := object.NewEnclosedEnvironment(fn.Env)
 
 	for i, param := range fn.Parameters {
