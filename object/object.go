@@ -21,21 +21,31 @@ const (
 )
 
 type Environment struct {
-	store map[string]Object
+	storage map[string]Object
+	outer   *Environment
 }
 
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
-	return &Environment{store: s}
+	return &Environment{storage: s, outer: nil}
+}
+
+func NewEnclosedEnvironment(outer *Environment) *Environment {
+	extended := NewEnvironment()
+	extended.outer = outer
+	return extended
 }
 
 func (e *Environment) Get(name string) (Object, bool) {
-	obj, ok := e.store[name]
+	obj, ok := e.storage[name]
+	if !ok && e.outer != nil {
+		obj, ok = e.outer.Get(name)
+	}
 	return obj, ok
 }
 
 func (e *Environment) Set(name string, val Object) Object {
-	e.store[name] = val
+	e.storage[name] = val
 	return val
 }
 
