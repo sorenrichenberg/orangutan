@@ -15,6 +15,7 @@ const (
 	INTEGER_OBJ  = "INTEGER"
 	BOOLEAN_OBJ  = "BOOLEAN"
 	NULL_OBJ     = "NULL"
+	STRING_OBJ   = "STRING"
 	RETURN_OBJ   = "RETURN"
 	ERROR_OBJ    = "ERROR"
 	FUNCTION_OBJ = "FUNCTION"
@@ -43,6 +44,13 @@ type Null struct{}
 
 func (n *Null) Inspect() string  { return "null" }
 func (n *Null) Type() ObjectType { return NULL_OBJ }
+
+type String struct {
+	Value string
+}
+
+func (s *String) Inspect() string  { return s.Value }
+func (s *String) Type() ObjectType { return STRING_OBJ }
 
 type ReturnValue struct {
 	Value Object
