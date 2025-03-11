@@ -1,3 +1,5 @@
+// object/environment.go
+
 package object
 
 type Environment struct {
