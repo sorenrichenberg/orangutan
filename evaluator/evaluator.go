@@ -16,6 +16,8 @@ var (
 
 func Eval(node ast.Node, env *object.Environment) object.Object {
 	switch node := node.(type) {
+
+	// Statements
 	case *ast.Program:
 		return evalProgram(node.Statements, env)
 
@@ -39,14 +41,15 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		env.Set(node.Name.Value, val)
 
+	// Expressions
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
 
-	case *ast.Boolean:
-		return nativeBoolToBooleanObject(node.Value)
-
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
+
+	case *ast.Boolean:
+		return nativeBoolToBooleanObject(node.Value)
 
 	case *ast.PrefixExpression:
 		right := Eval(node.Right, env)
@@ -352,7 +355,7 @@ func evalIndexExpression(receiver, index object.Object) object.Object {
 		return evalHashIndexExpression(receiver, index)
 	default:
 		return newError(
-			"index operation not supported for receiver type: %s, index type: %s", receiver.Type(), index.Type())
+			"index operator not supported: %s", index.Type())
 	}
 }
 
