@@ -348,6 +348,8 @@ func evalIndexExpression(receiver, index object.Object) object.Object {
 	switch {
 	case receiver.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
 		return evalArrayIndexExpression(receiver, index)
+	case receiver.Type() == object.HASH_OBJ:
+		return evalHashIndexExpression(receiver, index)
 	default:
 		return newError(
 			"index operation not supported for receiver type: %s, index type: %s", receiver.Type(), index.Type())
@@ -364,6 +366,22 @@ func evalArrayIndexExpression(receiver, index object.Object) object.Object {
 	}
 
 	return arr[idx]
+}
+
+func evalHashIndexExpression(hash, index object.Object) object.Object {
+	hashObject := hash.(*object.Hash)
+
+	key, ok := index.(object.Hashable)
+	if !ok {
+		return newError("unusable as hash key: %s", index.Type())
+	}
+
+	pair, ok := hashObject.Pairs[key.HashKey()]
+	if !ok {
+		return NULL
+	}
+
+	return pair.Value
 }
 
 func evalHashLiteral(node *ast.HashLiteral, env *object.Environment) object.Object {
