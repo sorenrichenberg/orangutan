@@ -97,6 +97,17 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 			return elements[0]
 		}
 		return &object.Array{Elements: elements}
+
+	case *ast.IndexExpression:
+		receiver := Eval(node.Receiver, env)
+		if isError(receiver) {
+			return receiver
+		}
+		index := Eval(node.Index, env)
+		if isError(index) {
+			return index
+		}
+		return evalIndexExpression(receiver, index)
 	}
 
 	return nil
@@ -328,4 +339,26 @@ func evalStringInfixExpression(operator string, left, right object.Object) objec
 	leftVal := left.(*object.String).Value
 	rightVal := right.(*object.String).Value
 	return &object.String{Value: leftVal + rightVal}
+}
+
+func evalIndexExpression(receiver, index object.Object) object.Object {
+	switch {
+	case receiver.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
+		return evalArrayIndexExpression(receiver, index)
+	default:
+		return newError(
+			"index operation not supported for receiver type: %s, index type: %s", receiver.Type(), index.Type())
+	}
+}
+
+func evalArrayIndexExpression(receiver, index object.Object) object.Object {
+	arr := receiver.(*object.Array).Elements
+	idx := index.(*object.Integer).Value
+	max := int64(len(arr) - 1)
+
+	if idx < 0 || idx > max {
+		return NULL
+	}
+
+	return arr[idx]
 }
