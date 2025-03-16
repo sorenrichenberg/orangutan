@@ -102,7 +102,7 @@ var builtins = map[string]*object.Builtin{
 			newElements := make([]object.Object, origLength+1)
 			copy(newElements, arr)
 			newElements[origLength] = args[1]
-			
+
 			return &object.Array{Elements: newElements}
 		},
 	},

@@ -302,8 +302,8 @@ type IndexExpression struct {
 	Index    Expression
 }
 
-func (ie *IndexExpression) expressionNode() {}
-func (ie *IndexExpression) TokenLiteral() string {return ie.Token.Lexeme}
+func (ie *IndexExpression) expressionNode()      {}
+func (ie *IndexExpression) TokenLiteral() string { return ie.Token.Lexeme }
 func (ie *IndexExpression) String() string {
 	var out bytes.Buffer
 
