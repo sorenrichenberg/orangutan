@@ -830,3 +830,53 @@ func TestStringLiteralExpression(t *testing.T) {
 		t.Errorf("literal.Value not %q. got=%q", "hello world", literal.Value)
 	}
 }
+
+func TestParsingEmptyArrayLiterals(t *testing.T) {
+	input := "[]"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("first program statement not ast.ExpressionStatement")
+	}
+
+	array, ok := stmt.ExprValue.(*ast.ArrayLiteral)
+	if !ok {
+		t.Fatalf("expression not ast.ArrayLiteral. got=%T", stmt.ExprValue)
+	}
+
+	if len(array.Elements) != 0 {
+		t.Errorf("len(array.Elements) not 0. got=%d", len(array.Elements))
+	}
+}
+
+func TestParsingArrayLiterals(t *testing.T) {
+	input := "[1, 2 * 2, 3 + 3]"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("first program statement not ast.ExpressionStatement")
+	}
+
+	array, ok := stmt.ExprValue.(*ast.ArrayLiteral)
+	if !ok {
+		t.Fatalf("expression not ast.ArrayLiteral. got=%T", stmt.ExprValue)
+	}
+
+	if len(array.Elements) != 3 {
+		t.Fatalf("len(array.Elements) not 3. got=%d", len(array.Elements))
+	}
+
+	testIntegerLiteral(t, array.Elements[0], 1)
+	testInfixExpression(t, array.Elements[1], 2, "*", 2)
+	testInfixExpression(t, array.Elements[2], 3, "+", 3)
+}
